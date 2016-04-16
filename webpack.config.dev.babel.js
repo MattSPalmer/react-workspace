@@ -8,7 +8,11 @@ export default {
   stats: {
     errorDetails: true
   },
-  entry: './index.js',
+  entry: [
+    'webpack/hot/dev-server',
+    'webpack-hot-middleware/client',
+    './index.js'
+  ],
   resolve: {
     root: path.resolve(__dirname),
   },
@@ -26,7 +30,6 @@ export default {
       inject: true,
       template: './src/htdocs/index.html'
     }),
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new webpack.NoErrorsPlugin()
   ],
   module: {
