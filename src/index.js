@@ -1,12 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const App = ({title}) => (
-  <div>
-    <h2>{title}</h2>
-  </div>
-)
+import App from './app'
 
 ReactDOM.render(
-  <App/>, document.getElementById('root')
+  <App title="Layout Demo" />, document.getElementById('root')
 )
