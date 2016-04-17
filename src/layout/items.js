@@ -5,7 +5,7 @@ export const Row = React.createClass({
   statics: {
     createConfig: (elem) => ({
       type: 'row',
-      dim: elem.props.dim,
+      relativeDim: elem.props.relativeDim,
       content: React.Children.map(elem.props.children, c => {
         if (c.type.createConfig)
           return c.type.createConfig(c)
@@ -24,7 +24,7 @@ export const Column = React.createClass({
   statics: {
     createConfig: (elem) => ({
       type: 'column',
-      dim: elem.props.dim,
+      relativeDim: elem.props.relativeDim,
       content: React.Children.map(elem.props.children, c => {
         if (c.type.createConfig)
           return c.type.createConfig(c)
@@ -43,7 +43,7 @@ export const Item = React.createClass({
   statics: {
     createConfig: (elem) => ({
       type: 'item',
-      dim: elem.props.dim,
+      relativeDim: elem.props.relativeDim,
       component: elem.props.component,
       title: elem.props.title,
       innerProps: elem.props.innerProps

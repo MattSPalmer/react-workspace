@@ -1,33 +1,117 @@
 import _ from 'lodash'
 
-export function walkConfig(config, dim = [1, 1]) {
-  const [w, h] = dim
-  const {content} = config
+const recursiveTransform = transform => {
+  function recursing(c) {
+    if (!c.content) return transform(c)
+    return transform({...c, content: c.content.map(recursing)})
+  }
+  return recursing
+}
 
-  let dims = _(content).map('dim').sum() || 0
-  let noDimCount = _(content).map('dim').filter(_.isUndefined).value().length
+function findOrientations(tree) {
+  const {content} = tree
+  if (!content) return tree
 
-  if (dims > 1 || (noDimCount > 0 && dims === 1)) {
-    dims = 0
-    noDimCount = content.length
+  const orientation = ({type}) => {
+    switch (type) {
+    case undefined:
+    case 'row':
+      return 'w'
+    case 'column':
+      return 'h'
+    }
   }
 
-  switch (config.type) {
-  case 'row':
-    return {
-      ...config, w, h,
-      content: content.map(c => walkConfig(c, [c.dim || (w - dims) / noDimCount, h]))
+  const mapper = c => findOrientations({
+    ...c, orientation: orientation(tree)
+  })
+  return {...tree, content: content.map(mapper)}
+}
+
+function getDimensions(node) {
+  const {parent, orientation, relativeDim} = node
+  const {content, dim} = parent
+  const parentDim = dim[orientation]
+
+  let dims, noDimCount
+  if (content) {
+    dims = _(content).map('relativeDim').sum() * parentDim
+    noDimCount = _(content).map('relativeDim').filter(_.isUndefined).value().length
+
+    if (!dims || (dims > 1 || (noDimCount > 0 && dims === 1))) {
+      dims = 0
+      noDimCount = content.length
     }
-  case 'column':
-    return {
-      ...config, w, h,
-      content: content.map(c => walkConfig(c, [w, c.dim || (h - dims) / noDimCount]))
-    }
-  case 'item':
-    return {...config, w, h}
+  }
+
+  let theDim = relativeDim ? relativeDim * parentDim : (parentDim - dims) / noDimCount
+  switch (orientation) {
+  case undefined:
+  case 'w':
+    return {...dim, w: theDim}
+  case 'h':
+    return {...dim, h: theDim}
   default:
-    return {
-      content: content.map(c => walkConfig(c, [c.dim || (w - dims) / noDimCount, h]))
-    }
+    throw TypeError
   }
+}
+
+function findDimensions(tree) {
+  const {content} = tree
+  if (!content) return tree
+
+  const mapper = c => findDimensions({
+    ...c, dim: getDimensions({...c, parent: tree})
+  })
+  return {...tree, content: content.map(mapper)}
+}
+
+function findAspectRatios(tree) {
+  const transform = c => ({
+    ...c, dim: {...c.dim, ratio: c.dim.w / c.dim.h},
+  })
+  return recursiveTransform(transform)(tree)
+}
+
+function transformAddIndex(tree) {
+  const transform = (c, index = 0) => ({...c, index})
+  return recursiveTransform(transform)(tree)
+}
+
+function transformAddParent(tree) {
+  const {content} = tree
+  if (!content) return tree
+
+  const mapper = c => transformAddParent({...c, parent: _.omit(tree, ['content'])})
+  return {...tree, content: content.map(mapper)}
+}
+
+function transformAddSiblings(tree) {
+  const {content} = tree
+  if (!content) return tree
+
+  return {
+    ...tree,
+    content: content.map(
+      c => ({...transformAddSiblings(c), siblings: content.length - 1})
+    )
+  }
+}
+
+function applyTransforms(tree, ...transforms) {
+  for (let transform of transforms) {
+    tree = transform(tree)
+  }
+  return tree
+}
+
+export function walkConfig(tree) {
+  return applyTransforms(tree,
+    findOrientations,
+    findDimensions,
+    findAspectRatios,
+    transformAddIndex,
+    transformAddSiblings,
+    transformAddParent
+  )
 }
