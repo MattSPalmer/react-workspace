@@ -45,7 +45,8 @@ export const Item = React.createClass({
       type: 'item',
       dim: elem.props.dim,
       component: elem.props.component,
-      props: elem.props.props
+      title: elem.props.title,
+      innerProps: elem.props.innerProps
     })
   },
   render() {

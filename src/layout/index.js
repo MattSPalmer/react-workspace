@@ -1,19 +1,47 @@
 import React from 'react'
 import {findDOMNode} from 'react-dom'
-import {debounce} from 'lodash'
-import Pane from './pane'
+import {get, debounce} from 'lodash'
+import {LayoutParent, LayoutItem, NotFoundInRegister} from './renderedItems'
 import {walkConfig} from './utility'
 
 const Layout = React.createClass({
+  getDefaultProps() {
+    return {
+      notFound: NotFoundInRegister,
+      itemWrapper: 'div'
+    }
+  },
   getInitialState() {
-    return {}
+    return {
+      parentDim: { w: 0, h: 0 }
+    }
   },
-  renderItem() {
-
+  renderLayoutChild(child, index) {
+    const key = `${child.type}.${index}`
+    const {w, h} = this.state.parentDim
+    const {dim} = child
+    const [width, height] = [dim.w * w, dim.h * h].map(Math.floor)
+    let commonProps = {key, width, height}
+    if (child.type === 'item') {
+      commonProps = {
+        ...commonProps,
+        componentClass: get(this.props.register, child.component, this.props.notFound),
+        wrapper: this.props.itemWrapper
+      }
+      return <LayoutItem {...child} {...commonProps} />
+    }
+    return (
+      <LayoutParent {...child} {...commonProps}>
+        {child.content.map(this.renderLayoutChild)}
+      </LayoutParent>
+    )
   },
-  renderItems() {
-    console.log(
-      JSON.stringify(this.walkConfig(), null, 2)
+  renderLayout() {
+    const config = this.walkConfig()
+    return (
+      <div style={{display: 'flex'}}>
+        {config.content.map(this.renderLayoutChild)}
+      </div>
     )
   },
   walkConfig() {
@@ -25,21 +53,21 @@ const Layout = React.createClass({
       if (c.type.createConfig)
         return c.type.createConfig(c)
     })
-    return {content}
+    return {content, dim: {w: 1, h: 1}}
   },
   updateDimensions() {
     const elem = findDOMNode(this)
     const {offsetWidth, offsetHeight} = elem
-    this.setState({parentDim: {w: offsetWidth, h: offsetHeight}})
-  },
-  handleResize() {
-    return debounce(this.updateDimensions, 50)()
+    this.setState({
+      parentDim: {w: offsetWidth, h: offsetHeight}
+    })
   },
   componentWillMount() {
     this.setState({config: this.createConfig()})
   },
   componentDidMount() {
-    window.addEventListener('resize', this.handleResize)
+    const handleResize = debounce(this.updateDimensions, 100)
+    window.addEventListener('resize', handleResize)
     this.updateDimensions()
   },
   componentWillReceiveProps(nextProps) {
@@ -52,7 +80,7 @@ const Layout = React.createClass({
     return (
       <div>
         <div style={{width: '100%', height: '100%'}}>
-          {this.renderItems()}
+          {this.renderLayout()}
         </div>
       </div>
     )
