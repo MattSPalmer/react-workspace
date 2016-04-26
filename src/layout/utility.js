@@ -29,14 +29,14 @@ function findOrientations(tree) {
 }
 
 function getDimensions(node) {
-  const {parent, orientation, relativeDim} = node
+  const {parent, orientation, relativeScale} = node
   const {content, dim} = parent
   const parentDim = dim[orientation]
 
   let dims, noDimCount
   if (content) {
-    dims = _(content).map('relativeDim').sum() * parentDim
-    noDimCount = _(content).map('relativeDim').filter(_.isUndefined).value().length
+    dims = _(content).map('relativeScale').sum() * parentDim
+    noDimCount = _(content).map('relativeScale').filter(_.isUndefined).value().length
 
     if (!dims || (dims > 1 || (noDimCount > 0 && dims === 1))) {
       dims = 0
@@ -44,7 +44,7 @@ function getDimensions(node) {
     }
   }
 
-  let theDim = relativeDim ? relativeDim * parentDim : (parentDim - dims) / noDimCount
+  let theDim = relativeScale ? relativeScale * parentDim : (parentDim - dims) / noDimCount
   switch (orientation) {
   case undefined:
   case 'w':
