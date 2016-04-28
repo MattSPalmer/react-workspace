@@ -8,7 +8,7 @@ const recursiveTransform = transform => {
   return recursing
 }
 
-function findOrientations(tree) {
+export function findOrientations(tree) {
   const {content} = tree
   if (!content) return tree
 
@@ -56,7 +56,7 @@ function getDimensions(node) {
   }
 }
 
-function findDimensions(tree) {
+export function findDimensions(tree) {
   const {content} = tree
   if (!content) return tree
 
@@ -66,19 +66,19 @@ function findDimensions(tree) {
   return {...tree, content: content.map(mapper)}
 }
 
-function findAspectRatios(tree) {
+export function findAspectRatios(tree) {
   const transform = c => ({
     ...c, dim: {...c.dim, ratio: c.dim.w / c.dim.h},
   })
   return recursiveTransform(transform)(tree)
 }
 
-function transformAddIndex(tree) {
+export function transformAddIndex(tree) {
   const transform = (c, index = 0) => ({...c, index})
   return recursiveTransform(transform)(tree)
 }
 
-function transformAddParent(tree) {
+export function transformAddParent(tree) {
   const {content} = tree
   if (!content) return tree
 
@@ -86,7 +86,7 @@ function transformAddParent(tree) {
   return {...tree, content: content.map(mapper)}
 }
 
-function transformAddSiblings(tree) {
+export function transformAddSiblings(tree) {
   const {content} = tree
   if (!content) return tree
 
@@ -112,6 +112,6 @@ export function walkConfig(tree) {
     findAspectRatios,
     transformAddIndex,
     transformAddSiblings,
-    transformAddParent
+    transformAddParent,
   )
 }
