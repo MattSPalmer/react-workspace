@@ -1,6 +1,6 @@
 import React from 'react'
 import {findDOMNode} from 'react-dom'
-import {get, debounce} from 'lodash'
+import {get, omit, debounce} from 'lodash'
 import {LayoutParent, LayoutItem, NotFoundInRegister} from './renderedItems'
 import {walkConfig} from './utility'
 
@@ -16,19 +16,24 @@ const Layout = React.createClass({
       parentDim: { w: 0, h: 0 }
     }
   },
-  renderLayoutChild(child, index) {
-    const key = `${child.type}.${index}`
+  renderLayoutChild(child) {
+    const {register, itemWrapper, notFound} = this.props
+    const key = child.id
     const {w, h} = this.state.parentDim
     const {dim} = child
     const [width, height] = [dim.w * w, dim.h * h].map(Math.floor)
+    const reshapedProps = {
+      ...child.innerProps,
+      ...omit(child, 'innerProps'),
+    }
     let commonProps = {key, width, height}
     if (child.type === 'item') {
       commonProps = {
         ...commonProps,
-        componentClass: get(this.props.register, child.component, this.props.notFound),
-        wrapper: this.props.itemWrapper
+        componentClass: get(register, child.component, notFound),
+        wrapper: get(register, itemWrapper, itemWrapper)
       }
-      return <LayoutItem {...child} {...commonProps} />
+      return <LayoutItem {...reshapedProps} {...commonProps} />
     }
     return (
       <LayoutParent {...child} {...commonProps}>
