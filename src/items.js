@@ -5,7 +5,9 @@ export const Row = React.createClass({
   statics: {
     createConfig: (elem) => ({
       type: 'row',
+      id: elem.props.id,
       relativeScale: elem.props.relativeScale,
+      innerProps: elem.props.innerProps || {},
       content: React.Children.map(elem.props.children, c => {
         if (c.type.createConfig)
           return c.type.createConfig(c)
@@ -24,7 +26,9 @@ export const Column = React.createClass({
   statics: {
     createConfig: (elem) => ({
       type: 'column',
+      id: elem.props.id,
       relativeScale: elem.props.relativeScale,
+      innerProps: elem.props.innerProps || {},
       content: React.Children.map(elem.props.children, c => {
         if (c.type.createConfig)
           return c.type.createConfig(c)
@@ -43,10 +47,11 @@ export const Item = React.createClass({
   statics: {
     createConfig: (elem) => ({
       type: 'item',
+      id: elem.props.id,
       relativeScale: elem.props.relativeScale,
       component: elem.props.component,
       title: elem.props.title,
-      innerProps: elem.props.innerProps
+      innerProps: elem.props.innerProps || {},
     })
   },
   render() {

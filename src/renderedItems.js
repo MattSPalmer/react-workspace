@@ -53,9 +53,10 @@ export const LayoutItem = React.createClass({
 export const NotFoundInRegister = React.createClass({
   render() {
     const {meta} = this.props
+    const {width, height} = meta
     if (process.env.NODE_ENV !== 'production') {
       return (
-        <div style={{fontSize: 16}}>
+        <div style={{width, height, fontSize: 16, overflow: 'scroll'}}>
           <h1>Component '{meta.component}' not found...</h1>
           <div>
             <span>Here's what we know:</span>

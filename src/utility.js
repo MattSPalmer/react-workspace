@@ -105,6 +105,33 @@ function applyTransforms(tree, ...transforms) {
   return tree
 }
 
+function logFunc(tree) {
+  if (tree.relativeScale) {
+    console.log(`Relative dimension is ${tree.relativeScale}`)
+    console.log(`Computed dimension is ${tree.relativeScale * (tree.parent.relativeScale || 1)}`)
+  } else {
+    console.log('-')
+  }
+  if (tree.orientation) {
+    console.log(`Orientation is ${tree.orientation}`)
+  }
+  console.log(`Dimensions are ${tree.dim.w}W x ${tree.dim.h}H`)
+}
+
+function logWalk(tree) {
+  console.groupCollapsed(tree.type || 'top')
+  if (tree.parent)
+    logFunc(tree)
+  let newTree
+  if (tree.content) {
+    newTree = {...tree, content: tree.content.map(logWalk)}
+  } else {
+    newTree = tree
+  }
+  console.groupEnd()
+  return newTree
+}
+
 export function walkConfig(tree) {
   return applyTransforms(tree,
     findOrientations,

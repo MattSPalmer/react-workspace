@@ -31,7 +31,7 @@ const TitleBar = React.createClass({
     )
   },
   render() {
-    let {config: {styleSettings}, title, style} = this.props
+    let {config: {styleSettings}, title} = this.props
     return (
       <div style={{
         ...topLevelStyle.titleBar,
@@ -56,7 +56,7 @@ const Pane = React.createClass({
     let contentHeight = height - config.titleHeight
     return (
       <div style={{
-        ...topLevelStyle.container, ...topLevelStyle.box, 
+        ...topLevelStyle.container, ...topLevelStyle.box,
         width, height
       }}>
         <TitleBar style={{width, height: config.titleHeight}}
