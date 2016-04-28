@@ -1,8 +1,8 @@
 {
   "name": "react-workspace",
   "version": "0.0.1",
-  "description": "a react-powered windowed layout react component inspired by golden-layout",
-  "main": "index.js",
+  "description": "a low-level layout component for react inspired by golden-layout",
+  "main": "dist/index.js",
   "scripts": {
     "start": "webpack-dev-server --hot --inline --config webpack.config.dev.babel.js",
     "start:prod": "webpack-dev-server --config webpack.config.prod.babel.js",
