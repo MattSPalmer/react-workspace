@@ -1,15 +1,21 @@
 import React from 'react'
 import {omit} from 'lodash'
 
-export const Box = React.createClass({
+export const DebugInfo = React.createClass({
   path(tree = this.props.meta) {
     if (!tree.parent) return 'layout'
     return `${this.path(tree.parent)} > ${tree.id}`
   },
   render() {
     const {meta} = this.props
+    const style = {
+      overflow: 'scroll',
+      padding: 10,
+      width: '100%',
+      height: '100%',
+    }
     return (
-      <div style={{padding: 10, width: '100%', height: '100%'}}>
+      <div style={style}>
         <div>
           <h3 style={{margin: 0}}>
             <pre>{this.path()}</pre>
@@ -46,7 +52,7 @@ export const Sizing = React.createClass({
         <div>
           <h1 style={headerStyle}>{meta.width} x {meta.height}</h1>
           <span style={{fontSize: meta.width / 24, color: theColor}}>
-            Child of {meta.parent.type} '{meta.parent.id}'. I have {meta.siblings} siblings!
+            Child of {meta.parent.type} '{meta.parent.id}'. I have {meta.siblings} sibs!
           </span>
         </div>
       </div>
@@ -146,7 +152,7 @@ export const DebugWrapper = React.createClass({
       <div style={style} {...sansKids}>
         {this.toggleButton()}
         <div style={{display: debug ? 'initial' : 'none'}}>
-          <Box meta={sansKids} />
+          <DebugInfo meta={sansKids} />
         </div>
         <div style={{display: debug ? 'none' : 'initial'}}>
           {this.props.children}

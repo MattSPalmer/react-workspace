@@ -1,22 +1,26 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 
-import Layout from './layout'
-import {Row, Column, Item} from './layout/items'
-import {Sizing, Timer, DebugWrapper} from './demoItems'
+import Layout from 'react-workspace'
+import {Row, Column, Item} from 'react-workspace/items'
+import {Sizing, Timer, DebugWrapper} from '../demoItems'
 
-const layoutRegister = {
-  wrappers: {
-    debug: DebugWrapper,
-  },
-  size: Sizing,
-  time: Timer,
-}
-
-export default React.createClass({
+const App = React.createClass({
   render() {
+    const register = {
+      wrappers: { debug: DebugWrapper, },
+      size: Sizing,
+      time: Timer,
+    }
+    const style = {
+      width: '100%',
+      position: 'relative',
+      float: 'left',
+      fontFamily: 'Open Sans',
+    }
     return (
-      <div style={style.app}>
-        <Layout register={layoutRegister}>
+      <div style={style}>
+        <Layout register={register}>
           <Column id='sidebar' relativeScale={0.2}>
             <Item id='one' component='size' />
           </Column>
@@ -35,11 +39,8 @@ export default React.createClass({
   }
 })
 
-const style = {
-  app: {
-    width: '100%',
-    position: 'relative',
-    float: 'left',
-    fontFamily: 'Open Sans',
-  },
-}
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+)
+

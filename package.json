@@ -4,8 +4,7 @@
   "description": "a low-level layout component for react inspired by golden-layout",
   "main": "dist/index.js",
   "scripts": {
-    "start": "webpack-dev-server --hot --inline --config webpack.config.dev.babel.js",
-    "start:prod": "webpack-dev-server --config webpack.config.prod.babel.js",
+    "start": "node examples/server.js",
     "build": "webpack --config webpack.config.prod.babel.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,6 +22,8 @@
     "babel-register": "^6.4.3",
     "eslint": "^2.5.3",
     "eslint-plugin-react": "^4.2.3",
+    "express": "^4.13.4",
+    "express-urlrewrite": "^1.2.0",
     "html-webpack-plugin": "^1.7.0",
     "react": "^15.0.0",
     "react-addons-perf": "^15.0.0",
