@@ -1,6 +1,6 @@
 import React from 'react'
 
-const LayoutWrapper = React.createClass({
+class LayoutWrapper extends React.Component {
   render() {
     let {style, children} = this.props
     style = {
@@ -9,12 +9,13 @@ const LayoutWrapper = React.createClass({
     }
     return <div style={style}>{children}</div>
   }
-})
+}
 
-export const LayoutParent = React.createClass({
-  propTypes: {
+export class LayoutParent extends React.Component {
+  static propTypes = {
     type: React.PropTypes.oneOf(['row', 'column']).isRequired
-  },
+  };
+
   render() {
     const {children, type} = this.props
     const layoutStyle = {
@@ -29,9 +30,9 @@ export const LayoutParent = React.createClass({
       </LayoutWrapper>
     )
   }
-})
+}
 
-export const LayoutItem = React.createClass({
+export class LayoutItem extends React.Component {
   render() {
     const Comp = this.props.componentClass
     const Wrapper = this.props.wrapper
@@ -48,9 +49,9 @@ export const LayoutItem = React.createClass({
       </LayoutWrapper>
     )
   }
-})
+}
 
-export const NotFoundInRegister = React.createClass({
+export class NotFoundInRegister extends React.Component {
   render() {
     const {meta} = this.props
     const {width, height} = meta
@@ -74,4 +75,4 @@ export const NotFoundInRegister = React.createClass({
       )
     }
   }
-})
+}

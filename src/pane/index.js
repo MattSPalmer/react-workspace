@@ -1,20 +1,19 @@
 import React from 'react'
 
-const TitleBar = React.createClass({
-  getDefaultProps() {
-    return {
-      title: 'Pane',
-      config: {
-        styleSettings: {
-          width: '101%',
-          fontSize: 12,
-          padding: 4,
-        },
-        // closeable: true,
+class TitleBar extends React.Component {
+  static defaultProps = {
+    title: 'Pane',
+    config: {
+      styleSettings: {
+        width: '101%',
+        fontSize: 12,
+        padding: 4,
       },
-    }
-  },
-  closeButton() {
+      // closeable: true,
+    },
+  };
+
+  closeButton = () => {
     if (!this.props.config.closeable) return null
     const {color} = this.props.config.styleSettings
     const {height} = this.props.style
@@ -29,7 +28,8 @@ const TitleBar = React.createClass({
         onClick={() => alert(`You clicked ${this.props.title}`)}>
       </div>
     )
-  },
+  };
+
   render() {
     let {config: {styleSettings}, title} = this.props
     return (
@@ -43,14 +43,13 @@ const TitleBar = React.createClass({
     </div>
     )
   }
-})
+}
 
-const Pane = React.createClass({
-  getDefaultProps() {
-    return {
-      config: { titleHeight: 20 }
-    }
-  },
+class Pane extends React.Component {
+  static defaultProps = {
+    config: { titleHeight: 20 }
+  };
+
   render() {
     const {title, config, children, width, height} = this.props
     let contentHeight = height - config.titleHeight
@@ -68,7 +67,7 @@ const Pane = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default Pane
 
