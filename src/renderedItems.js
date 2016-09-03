@@ -1,4 +1,5 @@
 import React from 'react'
+import {isString} from 'lodash'
 
 function LayoutWrapper(props) {
   let {style, children} = props
@@ -24,6 +25,8 @@ export function LayoutParent(props) {
   )
 }
 
+const wrapperProps = (wrapper, props) => isString(wrapper) ? {} : props
+
 export function LayoutItem(props) {
   const Comp = props.componentClass
   const Wrapper = props.wrapper
@@ -34,7 +37,7 @@ export function LayoutItem(props) {
   }
   return (
     <LayoutWrapper style={style}>
-      <Wrapper {...props}>
+      <Wrapper {...wrapperProps(Wrapper, props)}>
         <Comp {...props.innerProps} meta={props}/>
       </Wrapper>
     </LayoutWrapper>
