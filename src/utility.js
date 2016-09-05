@@ -15,9 +15,9 @@ type Tree = {
 }
 
 const recursiveTransform = transform => {
-  function recursing(c) {
-    if (!c.content) return transform(c)
-    return transform({...c, content: c.content.map(recursing)})
+  function recursing(c, index) {
+    if (!c.content) return transform(c, index)
+    return transform({...c, content: c.content.map(recursing)}, index)
   }
   return recursing
 }
