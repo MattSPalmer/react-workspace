@@ -34,10 +34,10 @@ function items(state = ITEMS_INITIAL_STATE, action) {
     }
   }
   case 'UPDATE_LAYOUT_ITEM': {
-    const item = state[action.id]
+    const layoutItem = state[action.id]
     return {
       ...state,
-      [action.id]: {...item, ...action.payload}
+      [action.id]: item(layoutItem, action)
     }
   }
   case 'REMOVE_LAYOUT_ITEM': {
@@ -45,6 +45,14 @@ function items(state = ITEMS_INITIAL_STATE, action) {
   }
   default:
     return state
+  }
+}
+
+function item(state = {}, action) {
+  switch (action.type) {
+  case 'UPDATE_LAYOUT_ITEM': {
+    return {...state, ...action.payload, id: state.id}
+  }
   }
 }
 
