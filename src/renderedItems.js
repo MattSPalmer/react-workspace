@@ -1,7 +1,10 @@
+/* @flow */
 import React from 'react'
 import {isString} from 'lodash'
 
-function LayoutWrapper(props) {
+type Props = { [key: string]: any }
+
+function LayoutWrapper(props: Props) {
   let {style, children} = props
   style = {
     overflow: 'hidden',
@@ -10,7 +13,12 @@ function LayoutWrapper(props) {
   return <div style={style}>{children}</div>
 }
 
-export function LayoutParent(props) {
+LayoutWrapper.propTypes = {
+  children: React.PropTypes.node,
+  style: React.PropTypes.object,
+}
+
+export function LayoutParent(props: Props) {
   const {children, type} = props
   const layoutStyle = {
     display: 'flex',
@@ -25,9 +33,14 @@ export function LayoutParent(props) {
   )
 }
 
+LayoutParent.propTypes = {
+  type: React.PropTypes.string,
+  children: React.PropTypes.node,
+}
+
 const wrapperProps = (wrapper, props) => isString(wrapper) ? {} : props
 
-export function LayoutItem(props) {
+export function LayoutItem(props: Props) {
   const Comp = props.componentClass
   const Wrapper = props.wrapper
   const {width, height} = props
@@ -44,7 +57,20 @@ export function LayoutItem(props) {
   )
 }
 
-export function NotFoundInRegister(props) {
+const componentLike = React.PropTypes.oneOfType([
+  React.PropTypes.string,
+  React.PropTypes.instanceOf(React.Component),
+  React.PropTypes.func,
+])
+
+LayoutItem.propTypes = {
+  componentClass: componentLike,
+  wrapper: componentLike,
+  width: React.PropTypes.number,
+  height: React.PropTypes.number,
+}
+
+export function NotFoundInRegister(props: Props) {
   const {meta} = props
   const {width, height} = meta
   if (process.env.NODE_ENV !== 'production') {
@@ -67,3 +93,8 @@ export function NotFoundInRegister(props) {
     )
   }
 }
+
+NotFoundInRegister.propTypes = {
+  meta: LayoutItem.propTypes,
+}
+

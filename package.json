@@ -25,6 +25,7 @@
     "eslint-plugin-react": "^4.2.3",
     "express": "^4.13.4",
     "express-urlrewrite": "^1.2.0",
+    "flow-bin": "^0.32.0",
     "html-webpack-plugin": "^1.7.0",
     "react": "^15.0.0",
     "react-addons-perf": "^15.0.0",

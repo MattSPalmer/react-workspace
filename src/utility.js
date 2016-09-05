@@ -1,4 +1,18 @@
+/* @flow */
+/* eslint-disable no-console */
 import _ from 'lodash'
+
+type Props = { [key: string]: any }
+type Dim = { w: number, h: number }
+
+type Tree = {
+  content: Array<Tree>,
+  parent: ?Tree,
+  relativeScale: ?number,
+  innerProps: ?Props,
+  dim: Dim,
+  type: string,
+}
 
 const recursiveTransform = transform => {
   function recursing(c) {
@@ -8,29 +22,25 @@ const recursiveTransform = transform => {
   return recursing
 }
 
-export function findOrientations(tree) {
-  const {content} = tree
-  if (!content) return tree
-
-  const orientation = ({type}) => {
-    switch (type) {
-    case undefined:
-    case 'row':
-      return 'w'
-    case 'column':
-      return 'h'
-    }
+const orientationFromType = type => {
+  switch (type) {
+  case undefined:
+  case 'row':
+    return 'w'
+  case 'column':
+    return 'h'
+  default:
+    throw TypeError
   }
-
-  const mapper = c => findOrientations({
-    ...c, orientation: orientation(tree)
-  })
-  return {...tree, content: content.map(mapper)}
 }
 
-function getDimensions(node) {
-  const {parent, orientation, relativeScale} = node
-  const {content, dim} = parent
+function getDimensions(node: Tree) {
+  if (!node.parent) {
+    return {w: 1, h: 1}
+  }
+  const {parent, relativeScale} = node
+  const {content, dim, type} = parent
+  const orientation = orientationFromType(type)
   const parentDim = dim[orientation]
 
   let dims, noDimCount
@@ -45,6 +55,7 @@ function getDimensions(node) {
   }
 
   let theDim = relativeScale ? relativeScale * parentDim : (parentDim - dims) / noDimCount
+
   switch (orientation) {
   case undefined:
   case 'w':
@@ -56,7 +67,7 @@ function getDimensions(node) {
   }
 }
 
-export function findDimensions(tree) {
+export function findDimensions(tree: Tree) {
   const {content} = tree
   if (!content) return tree
 
@@ -66,19 +77,19 @@ export function findDimensions(tree) {
   return {...tree, content: content.map(mapper)}
 }
 
-export function findAspectRatios(tree) {
+export function findAspectRatios(tree: Tree) {
   const transform = c => ({
     ...c, dim: {...c.dim, ratio: c.dim.w / c.dim.h},
   })
   return recursiveTransform(transform)(tree)
 }
 
-export function transformAddIndex(tree) {
+export function transformAddIndex(tree: Tree) {
   const transform = (c, index = 0) => ({...c, index})
   return recursiveTransform(transform)(tree)
 }
 
-export function transformAddParent(tree) {
+export function transformAddParent(tree: Tree) {
   const {content} = tree
   if (!content) return tree
 
@@ -86,7 +97,7 @@ export function transformAddParent(tree) {
   return {...tree, content: content.map(mapper)}
 }
 
-export function transformAddSiblings(tree) {
+export function transformAddSiblings(tree: Tree) {
   const {content} = tree
   if (!content) return tree
 
@@ -105,20 +116,18 @@ function applyTransforms(tree, ...transforms) {
   return tree
 }
 
-function logFunc(tree) {
-  if (tree.relativeScale) {
-    console.log(`Relative dimension is ${tree.relativeScale}`)
-    console.log(`Computed dimension is ${tree.relativeScale * (tree.parent.relativeScale || 1)}`)
-  } else {
-    console.log('-')
-  }
+function logFunc(tree: Tree) {
+  const scale = tree.relativeScale || 1
+  const parentScale = (tree.parent && tree.parent.relativeScale) || 1
+  console.log(`Relative dimension is ${scale || 1}`)
+  console.log(`Computed dimension is ${(scale || 1) * parentScale}`)
   if (tree.orientation) {
     console.log(`Orientation is ${tree.orientation}`)
   }
   console.log(`Dimensions are ${tree.dim.w}W x ${tree.dim.h}H`)
 }
 
-function logWalk(tree) {
+function logWalk(tree: Tree) {
   console.groupCollapsed(tree.type || 'top')
   if (tree.parent)
     logFunc(tree)
@@ -132,7 +141,7 @@ function logWalk(tree) {
   return newTree
 }
 
-export function walkConfig(tree) {
+export function walkConfig(tree: Tree) {
   return applyTransforms(tree,
     findOrientations,
     findDimensions,
