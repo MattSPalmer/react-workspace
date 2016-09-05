@@ -1,6 +1,7 @@
 /* @flow */
 /* eslint-disable no-console */
 import _ from 'lodash'
+import {pipe, map, reject, sum, multiply, isUndefined} from 'lodash/fp'
 
 type Props = { [key: string]: any }
 type Dim = { w: number, h: number }
@@ -45,13 +46,17 @@ function getDimensions(node: Tree) {
 
   let dims, noDimCount
   if (content) {
-    dims = _(content).map('relativeScale').sum() * parentDim
-    noDimCount = _(content).map('relativeScale').filter(_.isUndefined).value().length
+    const scales = pipe(map('relativeScale'), reject(isUndefined))
+    dims = pipe(scales, sum, multiply(parentDim))(content)
+    noDimCount = content.length - scales(content).length
 
-    if (!dims || (dims > 1 || (noDimCount > 0 && dims === 1))) {
+    if (!dims || dims > 1 || (noDimCount > 0 && dims === 1)) {
       dims = 0
       noDimCount = content.length
     }
+  } else {
+    dims = 0
+    noDimCount = content.length
   }
 
   let theDim = relativeScale ? relativeScale * parentDim : (parentDim - dims) / noDimCount
@@ -109,13 +114,6 @@ export function transformAddSiblings(tree: Tree) {
   }
 }
 
-function applyTransforms(tree, ...transforms) {
-  for (let transform of transforms) {
-    tree = transform(tree)
-  }
-  return tree
-}
-
 function logFunc(tree: Tree) {
   const scale = tree.relativeScale || 1
   const parentScale = (tree.parent && tree.parent.relativeScale) || 1
@@ -143,12 +141,11 @@ function logWalk(tree: Tree) {
 }
 
 export function walkConfig(tree: Tree) {
-  return applyTransforms(tree,
-    findOrientations,
+  return pipe(
     findDimensions,
     findAspectRatios,
     transformAddIndex,
     transformAddSiblings,
-    transformAddParent,
-  )
+    transformAddParent
+  )(tree)
 }

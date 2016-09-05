@@ -1,6 +1,6 @@
 /* @flow */
 import {combineReducers} from 'redux'
-import _ from 'lodash'
+import {pipe, get, has, map, omit, pull, flatten, fromPairs} from 'lodash/fp'
 
 const ITEMS_INITIAL_STATE = {
   layoutRoot: {
@@ -12,7 +12,8 @@ const ITEMS_INITIAL_STATE = {
 function items(state = ITEMS_INITIAL_STATE, action) {
   switch (action.type) {
   case 'ADD_LAYOUT_ITEM': {
-    if (_.keys(state).includes(action.item.id)) return state
+    const id = get('item.id')(action)
+    if (has(id, state)) return state
     return {
       [action.item.id]: {
         parent: 'layoutRoot',
@@ -29,7 +30,7 @@ function items(state = ITEMS_INITIAL_STATE, action) {
     }
   }
   case 'REMOVE_LAYOUT_ITEM': {
-    return _.omit(state, action.id)
+    return omit(action.id, state)
   }
   default:
     return state
@@ -76,13 +77,13 @@ function children(state = {}, action) {
   }
   case 'REMOVE_LAYOUT_ITEM': {
     const item = state[action.id]
-    const currentParent = state[item.parent]
     if (!item) return state
+    const currentParent = get(invertChildren(state)[action.id])(state)
     const output = {
       ...state,
       [item.parent]: itemChildren(currentParent, action)
     }
-    return _.omit(output, action.id)
+    return omit(action.id, output)
   }
   default:
     return state
@@ -93,7 +94,7 @@ function itemChildren(state = [], action) {
   switch (action.type) {
   case 'ADD_LAYOUT_ITEM': {
     const {index} = action
-    let output = _.pull(state, action.id)
+    let output = pull(action.id, state)
     if (index) {
       return [
         ...output.slice(0, index),
@@ -107,7 +108,7 @@ function itemChildren(state = [], action) {
   case 'UPDATE_LAYOUT_ITEM': {
     const {index} = action.payload
     if (index) {
-      let output = _.pull(state, action.id)
+      let output = pull(action.id, state)
       return [
         ...output.slice(0, index),
         action.item.id,
@@ -118,7 +119,7 @@ function itemChildren(state = [], action) {
     }
   }
   case 'REMOVE_LAYOUT_ITEM': {
-    return _.pull(state, action.id)
+    return pull(action.id, state)
   }
   default:
     return state
@@ -126,9 +127,10 @@ function itemChildren(state = [], action) {
 }
 
 function invertChildren(childrenMap) {
-  return _(childrenMap).map(
-    (v, k) => v.map(i => [i, k])
-  ).flattenDepth().fromPairs().value()
+  return pipe(
+    map((v, k) => v.map(i => [i, k])),
+    flatten, fromPairs
+  )(childrenMap)
 }
 
 
