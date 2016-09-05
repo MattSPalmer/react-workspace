@@ -25,7 +25,9 @@ function items(state = ITEMS_INITIAL_STATE, action) {
     if (has(id, state)) return state
     return {
       [action.item.id]: {
-        parent: 'layoutRoot',
+        parent: action.parent || 'layoutRoot',
+        type: 'item',
+        component: 'default',
         ...action.item
       },
       ...state
@@ -52,7 +54,7 @@ function children(state = CHILDREN_INITIAL_STATE, action) {
     const parent = action.item.parent || 'layoutRoot'
     return {
       ...state,
-      [parent]: itemChildren(state[parent || 'layoutRoot'], action)
+      [parent]: itemChildren(state[parent], action)
     }
   }
   case 'UPDATE_LAYOUT_ITEM': {
