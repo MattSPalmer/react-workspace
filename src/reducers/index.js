@@ -5,8 +5,17 @@ import {pipe, get, has, map, omit, pull, flatten, fromPairs} from 'lodash/fp'
 const ITEMS_INITIAL_STATE = {
   layoutRoot: {
     id: 'layoutRoot',
-    dim: {w: 1, h: 1}
+    dim: {w: 1, h: 1},
+  },
+  initialContent: {
+    id: 'initialContent',
+    type: 'item',
+    component: 'default',
   }
+}
+
+const CHILDREN_INITIAL_STATE = {
+  layoutRoot: ['initialContent'],
 }
 
 function items(state = ITEMS_INITIAL_STATE, action) {
@@ -37,7 +46,7 @@ function items(state = ITEMS_INITIAL_STATE, action) {
   }
 }
 
-function children(state = {}, action) {
+function children(state = CHILDREN_INITIAL_STATE, action) {
   switch (action.type) {
   case 'ADD_LAYOUT_ITEM': {
     const parent = action.item.parent || 'layoutRoot'
