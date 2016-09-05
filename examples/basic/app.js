@@ -5,7 +5,7 @@ import Layout from 'react-workspace'
 import {Row, Column, Item} from 'react-workspace/items'
 import {Sizing, Timer, DebugWrapper} from '../demoItems'
 
-const App = React.createClass({
+class App extends React.Component {
   render() {
     const register = {
       wrappers: { debug: DebugWrapper, },
@@ -37,7 +37,7 @@ const App = React.createClass({
       </div>
     )
   }
-})
+}
 
 ReactDOM.render(
   <App />,

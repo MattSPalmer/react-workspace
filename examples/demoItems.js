@@ -1,11 +1,12 @@
 import React from 'react'
-import {omit} from 'lodash'
+import {omit} from 'lodash/fp'
 
-export const DebugInfo = React.createClass({
-  path(tree = this.props.meta) {
+export class DebugInfo extends React.Component {
+  path = (tree = this.props.meta) => {
     if (!tree.parent) return 'layout'
     return `${this.path(tree.parent)} > ${tree.id}`
-  },
+  };
+
   render() {
     const {meta} = this.props
     const style = {
@@ -21,15 +22,15 @@ export const DebugInfo = React.createClass({
             <pre>{this.path()}</pre>
           </h3>
           <pre style={{margin: 0}}>
-            {JSON.stringify(meta, null, 2)}
+            {JSON.stringify(omit('parent', meta), null, 2)}
           </pre>
         </div>
       </div>
     )
   }
-})
+}
 
-export const Sizing = React.createClass({
+export class Sizing extends React.Component {
   render() {
     const {meta, color = '#CCC'} = this.props
     let theColor = meta.width > 400 ? color : 'orange'
@@ -58,30 +59,31 @@ export const Sizing = React.createClass({
       </div>
     )
   }
-})
+}
 
-export const Timer = React.createClass({
-  getInitialState() {
-    return {time: 0}
-  },
-  getDefaultProps() {
-    return {
-      color: 'black',
-    }
-  },
+export class Timer extends React.Component {
+  static defaultProps = {
+    color: 'black',
+  };
+
+  state = {time: 0};
+
   componentDidMount() {
     const fn = () => this.setState({time: this.state.time + 1})
     this.setState({
       timerId: window.setInterval(fn, 1000)
     })
-  },
+  }
+
   componentWillUnmount() {
     window.clearInterval(this.state.timerId)
-  },
-  handleClick() {
+  }
+
+  handleClick = () => {
     this.setState({time: 0})
-  },
-  formattedTime() {
+  };
+
+  formattedTime = () => {
     const {time} = this.state
     const zeroPad = (input, length = 2) => {
       input = '' + input
@@ -90,7 +92,8 @@ export const Timer = React.createClass({
     }
     const [min, sec] = [Math.floor(time / 60), time % 60]
     return `${zeroPad(min)}:${zeroPad(sec)}`
-  },
+  };
+
   render() {
     const {meta} = this.props
     const wrapStyle = {
@@ -109,22 +112,21 @@ export const Timer = React.createClass({
       </div>
     )
   }
-})
+}
 
-export const DebugWrapper = React.createClass({
-  getDefaultProps() {
-    return {
-      debug: false,
-      innerProps: {},
-    }
-  },
-  getInitialState() {
-    return { debug: this.props.innerProps.debug || this.props.debug }
-  },
-  handleClick() {
+export class DebugWrapper extends React.Component {
+  static defaultProps = {
+    debug: false,
+    innerProps: {},
+  };
+
+  state = { debug: this.props.innerProps.debug || this.props.debug };
+
+  handleClick = () => {
     this.setState({debug: !this.state.debug})
-  },
-  toggleButton() {
+  };
+
+  toggleButton = () => {
     const style = {
       position: 'absolute',
       top: 5, right: 5,
@@ -138,7 +140,8 @@ export const DebugWrapper = React.createClass({
       WebkitUserSelect: 'none',
     }
     return <div onClick={this.handleClick} style={style}>debug</div>
-  },
+  };
+
   render() {
     const {debug} = this.state
     const style = {
@@ -147,7 +150,7 @@ export const DebugWrapper = React.createClass({
       margin: '0 -1 -1 0',
       border: '1px solid black',
     }
-    const sansKids = omit(this.props, 'children')
+    const sansKids = omit('children', this.props)
     return (
       <div style={style} {...sansKids}>
         {this.toggleButton()}
@@ -160,5 +163,4 @@ export const DebugWrapper = React.createClass({
       </div>
     )
   }
-})
-
+}
