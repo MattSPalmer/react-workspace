@@ -127,6 +127,7 @@ function logFunc(tree: Tree) {
   console.log(`Dimensions are ${tree.dim.w}W x ${tree.dim.h}H`)
 }
 
+// eslint-disable-next-line no-unused-vars
 function logWalk(tree: Tree) {
   console.groupCollapsed(tree.type || 'top')
   if (tree.parent)

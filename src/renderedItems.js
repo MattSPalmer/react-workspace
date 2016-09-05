@@ -73,6 +73,7 @@ LayoutItem.propTypes = {
 export function NotFoundInRegister(props: Props) {
   const {meta} = props
   const {width, height} = meta
+  // eslint-disable-next-line no-undef
   if (process.env.NODE_ENV !== 'production') {
     return (
       <div style={{width, height, fontSize: 16, overflow: 'scroll'}}>
