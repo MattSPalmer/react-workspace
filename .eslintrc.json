@@ -15,14 +15,22 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "flowtype"
     ],
+    "settings": {
+        "flowtype": {
+            "onlyFilesWithFlowAnnotation": true
+        }
+    },
     "rules": {
         "comma-dangle": 0,
         "no-trailing-spaces": ["error"],
         "react/jsx-uses-react": 2,
         "react/jsx-uses-vars": 2,
         "react/react-in-jsx-scope": 2,
+        "flowtype/define-flow-type": 1,
+        "flowtype/valid-syntax": 1,
         "indent": [
             "error",
             2
