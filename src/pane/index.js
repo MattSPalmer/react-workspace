@@ -19,48 +19,40 @@ class TitleBar extends React.Component {
     const {height} = this.props.style
     const buttonSize = height - 15
     const buttonStyle = {
-      height: buttonSize, width: buttonSize,
+      height: buttonSize,
+      width: buttonSize,
       float: 'right',
       border: `1px solid ${color}`,
     }
-    return (
-      <div style={topLevelStyle.titleButton} style={buttonStyle}
-        onClick={() => alert(`You clicked ${this.props.title}`)}>
-      </div>
-    )
+    return <div style={{...topLevelStyle.titleButton, ...buttonStyle}} />
   };
 
   render() {
-    let {config: {styleSettings}, title} = this.props
+    const {config: {styleSettings}, title} = this.props
     return (
-      <div style={{
-        ...topLevelStyle.titleBar,
-        ...topLevelStyle.box,
-        ...styleSettings
-      }}>
-      <span>{title}</span>
-      {this.closeButton()}
-    </div>
+      <div style={{...topLevelStyle.titleBar, ...topLevelStyle.box, ...styleSettings}}>
+        <span>{title}</span>
+        {this.closeButton()}
+      </div>
     )
   }
 }
 
 class Pane extends React.Component {
   static defaultProps = {
-    config: { titleHeight: 20 }
+    config: {titleHeight: 20}
   };
 
   render() {
     const {title, config, children, width, height} = this.props
-    let contentHeight = height - config.titleHeight
+    const contentHeight = height - config.titleHeight
     return (
-      <div style={{
-        ...topLevelStyle.container, ...topLevelStyle.box,
-        width, height
-      }}>
-        <TitleBar style={{width, height: config.titleHeight}}
+      <div style={{...topLevelStyle.container, ...topLevelStyle.box, width, height}}>
+        <TitleBar
+          style={{width, height: config.titleHeight}}
           title={title}
-          config={config.titleBar} />
+          config={config.titleBar}
+        />
         <div style={{...topLevelStyle.paneContent, width, height: contentHeight}}>
           {children}
         </div>

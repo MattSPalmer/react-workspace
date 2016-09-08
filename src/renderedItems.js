@@ -5,12 +5,12 @@ import {isString} from 'lodash'
 type Props = { [key: string]: any }
 
 function LayoutWrapper(props: Props) {
-  let {style, children} = props
+  let {style} = props
   style = {
     overflow: 'hidden',
     ...style,
   }
-  return <div style={style}>{children}</div>
+  return <div style={style}>{props.children}</div>
 }
 
 LayoutWrapper.propTypes = {
@@ -38,20 +38,17 @@ LayoutParent.propTypes = {
   children: React.PropTypes.node,
 }
 
-const wrapperProps = (wrapper, props) => isString(wrapper) ? {} : props
+const wrapperProps = (wrapper, props) => (isString(wrapper) ? {} : props)
 
 export function LayoutItem(props: Props) {
   const Comp = props.componentClass
   const Wrapper = props.wrapper
   const {width, height} = props
-  const style = {
-    width, height,
-    flexGrow: 1,
-  }
+  const style = {width, height, flexGrow: 1}
   return (
     <LayoutWrapper style={style}>
       <Wrapper {...wrapperProps(Wrapper, props)}>
-        <Comp {...props.innerProps} meta={props}/>
+        <Comp {...props.innerProps} meta={props} />
       </Wrapper>
     </LayoutWrapper>
   )
@@ -86,13 +83,12 @@ export function NotFoundInRegister(props: Props) {
         </div>
       </div>
     )
-  } else {
-    return (
-      <div>
-        <pre>There was a problem loading this frame.</pre>
-      </div>
-    )
   }
+  return (
+    <div>
+      <pre>There was a problem loading this frame.</pre>
+    </div>
+  )
 }
 
 NotFoundInRegister.propTypes = {

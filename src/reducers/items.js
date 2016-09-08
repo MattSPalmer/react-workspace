@@ -43,20 +43,20 @@ const addItemToItems = (state: Items, item: Object) => {
     newItem = {component: 'default', ...newItem}
   }
 
-  return { [id]: newItem, ...state }
+  return {[id]: newItem, ...state}
 }
 
 const updateItemInItems = (state: Items, id: Id, payload: Object): Items => {
   if (!has(id, state)) return state
   const item = get(id, state)
-  return { ...state, [id]: {...item, ...payload, id} }
+  return {...state, [id]: {...item, ...payload, id}}
 }
 
 const splitPerpendicular = (state: Items, action: Action): Items => {
   const {id, newParentId, newItem} = action
   const item = get(id, state)
 
-  let newParent = {
+  const newParent = {
     id: newParentId,
     type: state[item.parent].type === 'column' ? 'row' : 'column',
     parent: item.parent
@@ -72,9 +72,7 @@ const splitPerpendicular = (state: Items, action: Action): Items => {
 const splitParallel = (state, action) => {
   const {id, newItem} = action
   const parent = get([id, 'parent'], state)
-  let resultState = addItemToItems(state, {...newItem, parent})
-
-  return resultState
+  return addItemToItems(state, {...newItem, parent})
 }
 
 function items(state: Items = ITEMS_INITIAL_STATE, action: Action) {

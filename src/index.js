@@ -11,7 +11,50 @@ class Layout extends React.Component {
   };
 
   state = {
-    parentDim: { w: 0, h: 0 }
+    parentDim: {w: 0, h: 0}
+  };
+
+  componentWillMount() {
+    this.setState({config: this.props.config || this.createConfig()})
+  }
+
+  componentDidMount() {
+    const handleResize = debounce(this.updateDimensions, 100)
+    window.addEventListener('resize', handleResize)
+    this.updateDimensions()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      config: nextProps.config || this.createConfig(nextProps)
+    })
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize)
+  }
+
+  updateDimensions = () => {
+    const elem = findDOMNode(this)
+    const {offsetWidth, offsetHeight} = elem
+    this.setState({
+      parentDim: {w: offsetWidth, h: offsetHeight}
+    })
+  };
+
+  createConfig = (props = this.props) => {
+    const content = React.Children.map(props.children, c => {
+      if (!c.type.createConfig) {
+        return null
+      }
+      return c.type.createConfig(c)
+    })
+    return {content, dim: {w: 1, h: 1}}
+  };
+
+  walkConfig = () => {
+    const {config} = this.state
+    return walkConfig(config)
   };
 
   renderLayoutChild = (child) => {
@@ -42,54 +85,13 @@ class Layout extends React.Component {
 
   renderLayout = () => {
     const config = this.walkConfig()
-    if (!config.content) return <div style={{display: 'flex'}}></div>
+    if (!config.content) return <div style={{display: 'flex'}} />
     return (
       <div style={{display: 'flex'}}>
         {config.content.map(this.renderLayoutChild)}
       </div>
     )
   };
-
-  walkConfig = () => {
-    const {config} = this.state
-    return walkConfig(config)
-  };
-
-  createConfig = (props=this.props) => {
-    const content = React.Children.map(props.children, c => {
-      if (c.type.createConfig)
-        return c.type.createConfig(c)
-    })
-    return {content, dim: {w: 1, h: 1}}
-  };
-
-  updateDimensions = () => {
-    const elem = findDOMNode(this)
-    const {offsetWidth, offsetHeight} = elem
-    this.setState({
-      parentDim: {w: offsetWidth, h: offsetHeight}
-    })
-  };
-
-  componentWillMount() {
-    this.setState({config: this.props.config || this.createConfig()})
-  }
-
-  componentDidMount() {
-    const handleResize = debounce(this.updateDimensions, 100)
-    window.addEventListener('resize', handleResize)
-    this.updateDimensions()
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      config: nextProps.config || this.createConfig(nextProps)
-    })
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize)
-  }
 
   render() {
     return (
@@ -100,6 +102,19 @@ class Layout extends React.Component {
       </div>
     )
   }
+}
+
+const componentLike = React.PropTypes.oneOfType([
+  React.PropTypes.string,
+  React.PropTypes.func,
+  React.PropTypes.instanceOf(React.Component),
+])
+
+Layout.propTypes = {
+  register: React.PropTypes.object,
+  config: React.PropTypes.object,
+  itemWrapper: componentLike,
+  notFound: componentLike,
 }
 
 export default Layout

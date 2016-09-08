@@ -50,9 +50,8 @@ const updateItemInChildren: ChildReducer = (state, action) => {
       ...state,
       [currentParent]: itemChildren(state[currentParent], action)
     }
-  } else {
-    return state
   }
+  return state
 }
 
 const removeItemFromChildren: ChildReducer = (state, action) => {
@@ -69,12 +68,13 @@ const removeItemFromChildren: ChildReducer = (state, action) => {
 
 const splitPerpendicular: ChildReducer = (state, action) => {
   const {id, newParentId, newItem} = action
-  const newParent = { id: newParentId, parent: getParentId(id, state) }
+  const newParent = {id: newParentId, parent: getParentId(id, state)}
 
   let resultState = addItemToChildren(state, {type: 'ADD_LAYOUT_ITEM', item: newParent})
 
   resultState = updateItemInChildren(resultState, {
-    type: 'UPDATE_LAYOUT_ITEM', id,
+    type: 'UPDATE_LAYOUT_ITEM',
+    id,
     payload: {parent: newParentId},
   })
 
@@ -86,13 +86,12 @@ const splitPerpendicular: ChildReducer = (state, action) => {
   return resultState
 }
 
-const splitParallel: ChildReducer = (state, action) =>  {
+const splitParallel: ChildReducer = (state, action) => {
   const {id, newItem} = action
-  let resultState = addItemToChildren(state, {
+  return addItemToChildren(state, {
     type: 'ADD_LAYOUT_ITEM',
     item: {...newItem, parent: getParentId(id, state)},
   })
-  return resultState
 }
 
 const children: ChildReducer = (state = CHILDREN_INITIAL_STATE, action) => {
@@ -112,9 +111,8 @@ const children: ChildReducer = (state = CHILDREN_INITIAL_STATE, action) => {
       return splitPerpendicular(state, action)
     } else if (direction === 'parallel') {
       return splitParallel(state, action)
-    } else {
-      return state
     }
+    return state
   }
   default:
     return state
@@ -129,9 +127,8 @@ const setIndex = (x: any, xs: any[], idx: number): any[] => {
 const setItemChildIndex = (state: ItemChildren, id: string, index: number): ItemChildren => {
   if (index) {
     return setIndex(id, state, index)
-  } else {
-    return [...pull(id, state), id]
   }
+  return [...pull(id, state), id]
 }
 
 export const itemChildren: ItemChildReducer = (state = [], action) => {

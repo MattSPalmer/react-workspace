@@ -1,3 +1,4 @@
+/* eslint-disable react/require-render-return, class-methods-use-this */
 import React from 'react'
 import invariant from 'invariant'
 
@@ -8,8 +9,10 @@ export class Row extends React.Component {
     relativeScale: elem.props.relativeScale,
     innerProps: elem.props.innerProps || {},
     content: React.Children.map(elem.props.children, c => {
-      if (c.type.createConfig)
-        return c.type.createConfig(c)
+      if (!c.type.createConfig) {
+        return null
+      }
+      return c.type.createConfig(c)
     })
   });
 
@@ -28,8 +31,10 @@ export class Column extends React.Component {
     relativeScale: elem.props.relativeScale,
     innerProps: elem.props.innerProps || {},
     content: React.Children.map(elem.props.children, c => {
-      if (c.type.createConfig)
-        return c.type.createConfig(c)
+      if (!c.type.createConfig) {
+        return null
+      }
+      return c.type.createConfig(c)
     })
   });
 

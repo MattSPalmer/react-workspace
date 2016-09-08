@@ -44,7 +44,9 @@ function getDimensions(node: Tree) {
   const orientation = orientationFromType(type)
   const parentDim = dim[orientation]
 
-  let dims, noDimCount
+  let dims
+  let noDimCount
+
   if (content) {
     const scales = pipe(map('relativeScale'), reject(isUndefined))
     dims = pipe(scales, sum, multiply(parentDim))(content)
@@ -59,7 +61,7 @@ function getDimensions(node: Tree) {
     noDimCount = content.length
   }
 
-  let theDim = relativeScale ? relativeScale * parentDim : (parentDim - dims) / noDimCount
+  const theDim = relativeScale ? relativeScale * parentDim : (parentDim - dims) / noDimCount
 
   switch (orientation) {
   case undefined:
@@ -128,8 +130,9 @@ function logFunc(tree: Tree) {
 // eslint-disable-next-line no-unused-vars
 function logWalk(tree: Tree) {
   console.groupCollapsed(tree.type || 'top')
-  if (tree.parent)
+  if (tree.parent) {
     logFunc(tree)
+  }
   let newTree
   if (tree.content) {
     newTree = {...tree, content: tree.content.map(logWalk)}
