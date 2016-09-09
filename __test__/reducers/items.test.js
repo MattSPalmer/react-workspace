@@ -1,17 +1,15 @@
 /* eslint-disable no-undef */
+import {keys} from 'lodash/fp'
 import items from '../../src/reducers/items'
 import {ROOT} from '../../src/reducers/constants'
-import {keys} from 'lodash/fp'
 
 describe('items', () => {
-
   it('has the correct number of initial items', () => {
     const state = items(undefined, {})
     expect(keys(state).length).toBe(2)
   })
 
   describe('adding items', () => {
-
     it('respects item default values', () => {
       let state = items(undefined, {})
 
@@ -24,7 +22,7 @@ describe('items', () => {
 
       expect(keys(state).length).toBe(3)
 
-      const item = state['foo']
+      const item = state.foo
       expect(item.id).toBe('foo')
       expect(item.parent).toBe(ROOT)
       expect(item.component).toBe('default')
@@ -40,7 +38,7 @@ describe('items', () => {
 
       state = items(state, action)
 
-      const item = state['foo']
+      const item = state.foo
       expect(item.component).toBe('size')
     })
 
@@ -61,15 +59,13 @@ describe('items', () => {
 
       state = items(state, newAction)
 
-      const item = state['foo']
+      const item = state.foo
       expect(item.component).toBe('default')
     })
   })
 
   describe('updating items', () => {
     it('updates item attributes', () => {
-      let state = undefined
-
       const addItem = {
         type: 'ADD_LAYOUT_ITEM',
         item: {id: 'foo', component: 'size'},
@@ -81,33 +77,29 @@ describe('items', () => {
         payload: {component: 'time'},
       }
 
-      state = items(state, addItem)
+      let state = items(state, addItem)
       state = items(state, updateItem)
 
-      const item = state['foo']
+      const item = state.foo
 
       expect(item.component).toBe('time')
     })
 
     it('does not add new items when id does not match existing item', () => {
-      let state = undefined
-
       const updateAction = {
         type: 'UPDATE_LAYOUT_ITEM',
         id: 'foo',
         payload: {component: 'size'},
       }
 
-      state = items(state, updateAction)
+      const state = items(state, updateAction)
 
-      const item = state['foo']
+      const item = state.foo
 
       expect(item).toBe(undefined)
     })
 
     it('does not change an existing item\'s id', () => {
-      let state = undefined
-
       const action = {
         type: 'ADD_LAYOUT_ITEM',
         item: {id: 'foo', component: 'size'},
@@ -119,10 +111,10 @@ describe('items', () => {
         payload: {id: 'bar', component: 'time'},
       }
 
-      state = items(state, action)
+      let state = items(state, action)
       state = items(state, updateAction)
 
-      const item = state['foo']
+      const item = state.foo
 
       expect(item.id).toBe('foo')
     })
@@ -150,8 +142,6 @@ describe('items', () => {
     })
 
     it('should have no effect when item doesn\'t exist', () => {
-      let state
-
       const addItem = {
         type: 'ADD_LAYOUT_ITEM',
         item: {id: 'foo'},
@@ -162,8 +152,8 @@ describe('items', () => {
         id: 'bar',
       }
 
-      let initialState = items(initialState, addItem)
-      state = items(initialState, removeItem)
+      const initialState = items(initialState, addItem)
+      const state = items(initialState, removeItem)
 
 
       expect(state).toEqual(initialState)
@@ -191,13 +181,14 @@ describe('items', () => {
         state = items(state, addItem)
         state = items(state, splitItem)
 
-        expect(state['fooParent']).toEqual({
-          id: 'fooParent', type: 'column',
+        expect(state.fooParent).toEqual({
+          id: 'fooParent',
+          type: 'column',
           parent: ROOT,
         })
 
-        expect(state['foo'].parent).toEqual('fooParent')
-        expect(state['bar'].parent).toEqual('fooParent')
+        expect(state.foo.parent).toEqual('fooParent')
+        expect(state.bar.parent).toEqual('fooParent')
       })
 
       it('converts to a column with row as parent', () => {
@@ -225,10 +216,10 @@ describe('items', () => {
         state = items(state, addItem)
         state = items(state, splitItem)
 
-        expect(state['uncle'].type).toBe('column')
+        expect(state.uncle.type).toBe('column')
 
-        expect(state['foo'].parent).toBe('uncle')
-        expect(state['cousin'].parent).toBe('uncle')
+        expect(state.foo.parent).toBe('uncle')
+        expect(state.cousin.parent).toBe('uncle')
       })
 
       it('converts to a row with column as parent', () => {
@@ -256,10 +247,10 @@ describe('items', () => {
         state = items(state, addItem)
         state = items(state, splitItem)
 
-        expect(state['uncle'].type).toBe('row')
+        expect(state.uncle.type).toBe('row')
 
-        expect(state['foo'].parent).toBe('uncle')
-        expect(state['cousin'].parent).toBe('uncle')
+        expect(state.foo.parent).toBe('uncle')
+        expect(state.cousin.parent).toBe('uncle')
       })
     })
 
@@ -288,12 +279,11 @@ describe('items', () => {
         state = items(state, addItem)
         state = items(state, splitItem)
 
-        expect(state['dad'].type).toBe('column')
+        expect(state.dad.type).toBe('column')
 
-        expect(state['foo'].parent).toBe('dad')
-        expect(state['cousin'].parent).toBe('dad')
+        expect(state.foo.parent).toBe('dad')
+        expect(state.cousin.parent).toBe('dad')
       })
-
     })
   })
 })
