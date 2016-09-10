@@ -1,4 +1,4 @@
-/*eslint-env node*/
+/* eslint-env node */
 import webpack from 'webpack'
 import HTMLWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
@@ -23,7 +23,7 @@ export default {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('development')
+        NODE_ENV: JSON.stringify('development')
       }
     }),
     new HTMLWebpackPlugin({

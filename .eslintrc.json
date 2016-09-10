@@ -21,6 +21,11 @@
     "settings": {
         "flowtype": {
             "onlyFilesWithFlowAnnotation": true
+        },
+        "import/resolver": {
+            "webpack": {
+                "config": "webpack.config.dev.babel.js"
+            }
         }
     },
     "rules": {
@@ -37,6 +42,7 @@
         "react/react-in-jsx-scope": 2,
         "flowtype/define-flow-type": 1,
         "flowtype/valid-syntax": 1,
+        "import/no-extraneous-dependencies": 0,
         "indent": [
             "error",
             2
