@@ -3,18 +3,6 @@
 import _ from 'lodash'
 import {pipe, map, reject, sum, multiply, isUndefined} from 'lodash/fp'
 
-type Props = { [key: string]: any }
-type Dim = { w: number, h: number }
-
-type Tree = {
-  content: Array<Tree>,
-  parent: ?Tree,
-  relativeScale: ?number,
-  innerProps: ?Props,
-  dim: Dim,
-  type: string,
-}
-
 const recursiveTransform = transform => {
   function recursing(c, index) {
     if (!c.content) return transform(c, index)

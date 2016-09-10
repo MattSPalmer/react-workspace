@@ -8,13 +8,7 @@ const CHILDREN_INITIAL_STATE = {
   [ROOT]: [INITIAL_CONTENT],
 }
 
-type ItemChildren = string[]
-type ItemChildReducer = Reducer<ItemChildren>
-
-type Children = {[key: string]: ItemChildren}
-type ChildReducer = Reducer<Children>
 type ChildTest = Test<Children>
-
 
 const existsAsChild = (id: string): ChildTest => pipe(_.values, _.flatten, _.includes(id))
 

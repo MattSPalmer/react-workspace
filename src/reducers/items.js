@@ -16,19 +16,6 @@ const ITEMS_INITIAL_STATE = {
   }
 }
 
-type Action = {[key: string]: any}
-type Id = string
-
-type Item = {
-  id: Id,
-  parent: Id,
-  component: string,
-  type: string,
-  relativeScale: ?number,
-}
-
-type Items = {[id: string]: Item}
-
 const addItemToItems = (state: Items, item: Object) => {
   const {id} = item
   if (has(id, state)) return state
