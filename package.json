@@ -9,7 +9,9 @@
     "test": "jest"
   },
   "jest": {
-    "verbose": true
+  "collectCoverageFrom": [
+    "src/**/*.js"
+  ]
   },
   "author": "Matt Palmer <palmer.s.matt@gmail.com>",
   "license": "ISC",
