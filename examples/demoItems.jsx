@@ -1,14 +1,21 @@
 import React from 'react'
-import {omit} from 'lodash/fp'
+import {connect} from 'react-redux'
+import {omit, join} from 'lodash/fp'
 
-export class DebugInfo extends React.Component {
+import {
+  itemPath as itemPathSelector,
+  itemDepth as itemDepthSelector
+} from 'react-workspace/selectors'
+
+class DumbDebugInfo extends React.Component {
   path = (tree = this.props.meta) => {
     if (!tree.parent) return 'layout'
     return `${this.path(tree.parent)} > ${tree.id}`
   };
 
   render() {
-    const {meta} = this.props
+    const {meta, itemPath, itemDepth} = this.props
+    const {id} = meta
     const style = {
       overflow: 'scroll',
       padding: 10,
@@ -19,7 +26,7 @@ export class DebugInfo extends React.Component {
       <div style={style}>
         <div>
           <h3 style={{margin: 0}}>
-            <pre>{this.path()}</pre>
+            <pre>{join(' > ', itemPath(id))} ({itemDepth(id)})</pre>
           </h3>
           <pre style={{margin: 0}}>
             {JSON.stringify(omit('parent', meta), null, 2)}
@@ -30,35 +37,50 @@ export class DebugInfo extends React.Component {
   }
 }
 
-export class Sizing extends React.Component {
-  render() {
-    const {meta, color = '#CCC'} = this.props
-    let theColor = meta.width > 400 ? color : 'orange'
+DumbDebugInfo.propTypes = {
+  meta: React.PropTypes.object,
+  itemPath: React.PropTypes.func,
+  itemDepth: React.PropTypes.func,
+}
 
-    const wrapStyle = {
-      width: '100%', height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      border: '1px solid #CCC',
-      margin: '0 -1 -1 0',
-    }
-    const headerStyle = {
-      fontSize: meta.width / 7,
-      color: theColor,
-      margin: 0,
-    }
-    return (
-      <div style={wrapStyle}>
-        <div>
-          <h1 style={headerStyle}>{meta.width} x {meta.height}</h1>
-          <span style={{fontSize: meta.width / 24, color: theColor}}>
-            Child of {meta.parent.type} '{meta.parent.id}'. I have {meta.siblings} sibs!
-          </span>
-        </div>
-      </div>
-    )
+export const DebugInfo = connect(state => ({
+  itemPath: itemPathSelector(state),
+  itemDepth: itemDepthSelector(state)
+}))(DumbDebugInfo)
+
+export const Sizing = props => {
+  const {meta, color = '#CCC'} = props
+  const theColor = meta.width > 400 ? color : 'orange'
+
+  const wrapStyle = {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    border: '1px solid #CCC',
+    margin: '0 -1 -1 0',
   }
+  const headerStyle = {
+    fontSize: meta.width / 7,
+    color: theColor,
+    margin: 0,
+  }
+  return (
+    <div style={wrapStyle}>
+      <div>
+        <h1 style={headerStyle}>{meta.width} x {meta.height}</h1>
+        <span style={{fontSize: meta.width / 24, color: theColor}}>
+          {meta.id} - child of {meta.parent.type} '{meta.parent.id}'. I have {meta.siblings} sibs!
+        </span>
+      </div>
+    </div>
+  )
+}
+
+Sizing.propTypes = {
+  meta: React.PropTypes.object,
+  color: React.PropTypes.string,
 }
 
 export class Timer extends React.Component {
@@ -68,7 +90,7 @@ export class Timer extends React.Component {
 
   state = {time: 0};
 
-  componentDidMount() {
+  componentWillMount() {
     const fn = () => this.setState({time: this.state.time + 1})
     this.setState({
       timerId: window.setInterval(fn, 1000)
@@ -86,9 +108,9 @@ export class Timer extends React.Component {
   formattedTime = () => {
     const {time} = this.state
     const zeroPad = (input, length = 2) => {
-      input = '' + input
-      let paddingSize = Math.max(0, length - input.length)
-      return new Array(paddingSize > 0 ? paddingSize + 1 : 0).join('0') + input
+      const stringInput = String(input)
+      const paddingSize = Math.max(0, length - stringInput.length)
+      return new Array(paddingSize > 0 ? paddingSize + 1 : 0).join('0') + stringInput
     }
     const [min, sec] = [Math.floor(time / 60), time % 60]
     return `${zeroPad(min)}:${zeroPad(sec)}`
@@ -97,21 +119,30 @@ export class Timer extends React.Component {
   render() {
     const {meta} = this.props
     const wrapStyle = {
-      width: '100%', height: '100%',
+      width: '100%',
+      height: '100%',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
     }
     const headerStyle = {
-      color: this.props.color, fontSize: meta.width / 3,
-      margin: 0, display: 'inline-block',
+      color: this.props.color,
+      fontSize: meta.width / 3,
+      display: 'inline-block',
+      margin: 0,
     }
     return (
       <div style={wrapStyle}>
-        <h2 style={headerStyle} onClick={this.handleClick}>{this.formattedTime()}</h2>
+        <h2 style={headerStyle}>{this.formattedTime()}</h2>
+        <button onClick={this.handleClick}>reset</button>
       </div>
     )
   }
+}
+
+Timer.propTypes = {
+  meta: React.PropTypes.object,
+  color: React.PropTypes.object,
 }
 
 export class DebugWrapper extends React.Component {
@@ -120,7 +151,7 @@ export class DebugWrapper extends React.Component {
     innerProps: {},
   };
 
-  state = { debug: this.props.innerProps.debug || this.props.debug };
+  state = {debug: this.props.innerProps.debug || this.props.debug};
 
   handleClick = () => {
     this.setState({debug: !this.state.debug})
@@ -129,16 +160,19 @@ export class DebugWrapper extends React.Component {
   toggleButton = () => {
     const style = {
       position: 'absolute',
-      top: 5, right: 5,
+      top: 5,
+      right: 5,
       boxSizing: 'border-box',
       border: '2px solid black',
       background: 'orange',
-      fontSize: 10, padding: 4,
+      fontSize: 10,
+      padding: 4,
       fontWeight: 'bold',
       textTransform: 'uppercase',
       cursor: 'pointer',
       WebkitUserSelect: 'none',
     }
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     return <div onClick={this.handleClick} style={style}>debug</div>
   };
 
@@ -163,4 +197,10 @@ export class DebugWrapper extends React.Component {
       </div>
     )
   }
+}
+
+DebugWrapper.propTypes = {
+  innerProps: React.PropTypes.object,
+  debug: React.PropTypes.bool,
+  children: React.PropTypes.node,
 }

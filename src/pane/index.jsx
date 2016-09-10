@@ -1,3 +1,4 @@
+/* @flow */
 import React from 'react'
 
 class TitleBar extends React.Component {
@@ -38,6 +39,12 @@ class TitleBar extends React.Component {
   }
 }
 
+TitleBar.propTypes = {
+  config: React.PropTypes.object,
+  title: React.PropTypes.string,
+  style: React.PropTypes.number,
+}
+
 class Pane extends React.Component {
   static defaultProps = {
     config: {titleHeight: 20}
@@ -59,6 +66,14 @@ class Pane extends React.Component {
       </div>
     )
   }
+}
+
+Pane.propTypes = {
+  title: React.PropTypes.string,
+  config: React.PropTypes.object,
+  children: React.PropTypes.node,
+  width: React.PropTypes.number,
+  height: React.PropTypes.number,
 }
 
 export default Pane
