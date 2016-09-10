@@ -3,8 +3,8 @@
 import _ from 'lodash'
 import {pipe, map, reject, sum, multiply, isUndefined} from 'lodash/fp'
 
-const recursiveTransform = transform => {
-  function recursing(c, index) {
+const recursiveTransform = (transform: Transform): Transform => {
+  const recursing: Transform = function (c, index) {
     if (!c.content) return transform(c, index)
     return transform({...c, content: c.content.map(recursing)}, index)
   }
@@ -80,7 +80,7 @@ export function findAspectRatios(tree: Tree) {
 }
 
 export function transformAddIndex(tree: Tree) {
-  const transform = (c, index = 0) => ({...c, index})
+  const transform: Transform = (c, index = 0) => ({...c, index})
   return recursiveTransform(transform)(tree)
 }
 
@@ -131,7 +131,7 @@ function logWalk(tree: Tree) {
   return newTree
 }
 
-export function walkConfig(tree: Tree) {
+export function walkConfig(tree: Tree): Tree {
   return pipe(
     findDimensions,
     findAspectRatios,

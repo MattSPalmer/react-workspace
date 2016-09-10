@@ -113,12 +113,12 @@ const children: ChildReducer = (state = CHILDREN_INITIAL_STATE, action) => {
   }
 }
 
-const setIndex = (x: any, xs: any[], idx: number): any[] => {
+function setIndex<T>(x: T, xs: T[], idx?: number): T[] {
   const p: any[] = pull(x, xs)
   return [...p.slice(0, idx), x, ...p.slice(idx, p.length)]
 }
 
-const setItemChildIndex = (state: ItemChildren, id: string, index: number): ItemChildren => {
+const setItemChildIndex = (state: ItemChildren, id: string, index?: number): ItemChildren => {
   if (index) {
     return setIndex(id, state, index)
   }
