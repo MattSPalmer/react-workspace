@@ -1,0 +1,281 @@
+exports[`tree manipulation adds aspect ratios 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "content": Array [
+        Object {
+          "dim": Object {
+            "h": 1,
+            "ratio": 0.16666666666666666,
+            "w": 0.16666666666666666
+          },
+          "id": "row1child1"
+        },
+        Object {
+          "dim": Object {
+            "h": 1,
+            "ratio": 0.16666666666666666,
+            "w": 0.16666666666666666
+          },
+          "id": "row1child2"
+        },
+        Object {
+          "dim": Object {
+            "h": 1,
+            "ratio": 0.16666666666666666,
+            "w": 0.16666666666666666
+          },
+          "id": "row1child3"
+        }
+      ],
+      "dim": Object {
+        "h": 1,
+        "ratio": 0.5,
+        "w": 0.5
+      },
+      "id": "row1",
+      "type": "row"
+    },
+    Object {
+      "content": Array [
+        Object {
+          "dim": Object {
+            "h": 0.3333333333333333,
+            "ratio": 1.5,
+            "w": 0.5
+          },
+          "id": "column1child1"
+        },
+        Object {
+          "dim": Object {
+            "h": 0.3333333333333333,
+            "ratio": 1.5,
+            "w": 0.5
+          },
+          "id": "column1child2"
+        },
+        Object {
+          "dim": Object {
+            "h": 0.3333333333333333,
+            "ratio": 1.5,
+            "w": 0.5
+          },
+          "id": "column1child3"
+        }
+      ],
+      "dim": Object {
+        "h": 1,
+        "ratio": 0.5,
+        "w": 0.5
+      },
+      "id": "column1",
+      "type": "column"
+    }
+  ],
+  "dim": Object {
+    "h": 1,
+    "ratio": 1,
+    "w": 1
+  },
+  "id": "root"
+}
+`;
+
+exports[`tree manipulation adds the index 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "content": Array [
+        Object {
+          "id": "row1child1",
+          "index": 0
+        },
+        Object {
+          "id": "row1child2",
+          "index": 1
+        },
+        Object {
+          "id": "row1child3",
+          "index": 2
+        }
+      ],
+      "id": "row1",
+      "index": 0,
+      "type": "row"
+    },
+    Object {
+      "content": Array [
+        Object {
+          "id": "column1child1",
+          "index": 0
+        },
+        Object {
+          "id": "column1child2",
+          "index": 1
+        },
+        Object {
+          "id": "column1child3",
+          "index": 2
+        }
+      ],
+      "id": "column1",
+      "index": 1,
+      "type": "column"
+    }
+  ],
+  "dim": Object {
+    "h": 1,
+    "w": 1
+  },
+  "id": "root",
+  "index": 0
+}
+`;
+
+exports[`tree manipulation findDimensions correctly calculates width or height based on parent 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "content": Array [
+        Object {
+          "dim": Object {
+            "h": 1,
+            "w": 0.16666666666666666
+          },
+          "id": "row1child1"
+        },
+        Object {
+          "dim": Object {
+            "h": 1,
+            "w": 0.16666666666666666
+          },
+          "id": "row1child2"
+        },
+        Object {
+          "dim": Object {
+            "h": 1,
+            "w": 0.16666666666666666
+          },
+          "id": "row1child3"
+        }
+      ],
+      "dim": Object {
+        "h": 1,
+        "w": 0.5
+      },
+      "id": "row1",
+      "type": "row"
+    },
+    Object {
+      "content": Array [
+        Object {
+          "dim": Object {
+            "h": 0.3333333333333333,
+            "w": 0.5
+          },
+          "id": "column1child1"
+        },
+        Object {
+          "dim": Object {
+            "h": 0.3333333333333333,
+            "w": 0.5
+          },
+          "id": "column1child2"
+        },
+        Object {
+          "dim": Object {
+            "h": 0.3333333333333333,
+            "w": 0.5
+          },
+          "id": "column1child3"
+        }
+      ],
+      "dim": Object {
+        "h": 1,
+        "w": 0.5
+      },
+      "id": "column1",
+      "type": "column"
+    }
+  ],
+  "dim": Object {
+    "h": 1,
+    "w": 1
+  },
+  "id": "root"
+}
+`;
+
+exports[`tree manipulation findDimensions finds the dimensions of a basic tree 1`] = `
+Object {
+  "content": Array [
+    Object {
+      "content": Array [
+        Object {
+          "dim": Object {
+            "h": 1,
+            "w": 0.16666666666666666
+          },
+          "id": "row1child1"
+        },
+        Object {
+          "dim": Object {
+            "h": 1,
+            "w": 0.16666666666666666
+          },
+          "id": "row1child2"
+        },
+        Object {
+          "dim": Object {
+            "h": 1,
+            "w": 0.16666666666666666
+          },
+          "id": "row1child3"
+        }
+      ],
+      "dim": Object {
+        "h": 1,
+        "w": 0.5
+      },
+      "id": "row1",
+      "type": "row"
+    },
+    Object {
+      "content": Array [
+        Object {
+          "dim": Object {
+            "h": 0.3333333333333333,
+            "w": 0.5
+          },
+          "id": "column1child1"
+        },
+        Object {
+          "dim": Object {
+            "h": 0.3333333333333333,
+            "w": 0.5
+          },
+          "id": "column1child2"
+        },
+        Object {
+          "dim": Object {
+            "h": 0.3333333333333333,
+            "w": 0.5
+          },
+          "id": "column1child3"
+        }
+      ],
+      "dim": Object {
+        "h": 1,
+        "w": 0.5
+      },
+      "id": "column1",
+      "type": "column"
+    }
+  ],
+  "dim": Object {
+    "h": 1,
+    "w": 1
+  },
+  "id": "root"
+}
+`;
