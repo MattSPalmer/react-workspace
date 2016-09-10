@@ -7,6 +7,15 @@ import {
   itemDepth as itemDepthSelector
 } from 'react-workspace/selectors'
 
+import * as actions from 'react-workspace/actions'
+
+
+const mapDispatch = (dispatch, {meta}) => ({
+  splitItem: (parent: Id, newItem: Item, direction): void => (
+    dispatch(actions.splitItem(meta.id, parent, newItem, direction))
+  )
+})
+
 class DumbDebugInfo extends React.Component {
   path = (tree = this.props.meta) => {
     if (!tree.parent) return 'layout'
@@ -14,7 +23,7 @@ class DumbDebugInfo extends React.Component {
   };
 
   render() {
-    const {meta, itemPath, itemDepth} = this.props
+    const {meta, itemPath, itemDepth, splitItem} = this.props
     const {id} = meta
     const style = {
       overflow: 'scroll',
@@ -31,6 +40,9 @@ class DumbDebugInfo extends React.Component {
           <pre style={{margin: 0}}>
             {JSON.stringify(omit('parent', meta), null, 2)}
           </pre>
+          <div>
+            <button onClick={() => splitItem('down')}>Split</button>
+          </div>
         </div>
       </div>
     )
@@ -46,7 +58,7 @@ DumbDebugInfo.propTypes = {
 export const DebugInfo = connect(state => ({
   itemPath: itemPathSelector(state),
   itemDepth: itemDepthSelector(state)
-}))(DumbDebugInfo)
+}), mapDispatch)(DumbDebugInfo)
 
 export const Sizing = props => {
   const {meta, color = '#CCC'} = props
