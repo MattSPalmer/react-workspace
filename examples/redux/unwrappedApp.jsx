@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import Layout from 'react-workspace'
 import state from 'react-workspace/selectors'
 
-import {Sizing, Timer, DebugWrapper, DebugInfo} from '../demoItems'
+import {Sizing, Timer, DebugWrapper, DebugInfo} from '../components'
 import LayoutSummary from './layoutSummary'
 
 

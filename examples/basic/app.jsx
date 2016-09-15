@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 import Layout from 'react-workspace'
 import {Row, Column, Item} from 'react-workspace/items'
-import {Sizing, Timer, DebugWrapper} from '../demoItems'
+import {Sizing, Timer, DebugWrapper} from '../components'
 
 const App = () => {
   const register = {
