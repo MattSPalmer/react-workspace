@@ -6,7 +6,7 @@ var webpack = require('webpack')
 module.exports = {
   devtool: 'inline-source-map',
   entry: fs.readdirSync(__dirname).reduce((entries, dir) => {
-    if (fs.statSync(path.join(__dirname, dir)).isDirectory()) {
+    if (fs.statSync(path.join(__dirname, dir)).isDirectory() && dir !== 'components') {
       entries[dir] = [
         'webpack/hot/dev-server',
         'webpack-hot-middleware/client',

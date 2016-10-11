@@ -23,9 +23,10 @@ app.use(webpackHotMiddleware(compiler, {
   log: console.log
 }))
 
+const isDirectory = file => fs.statSync(path.join(__dirname, file)).isDirectory()
 
 fs.readdirSync(__dirname).forEach(file => {
-  if (fs.statSync(path.join(__dirname, file)).isDirectory()) {
+  if (isDirectory(file) && file !== 'components') {
     app.use(rewrite(`/${file}/*`, `/${file}/index.html`))
   }
 })
